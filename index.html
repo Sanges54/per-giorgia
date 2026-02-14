@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0f1e">
+    <title>Per Giorgia ❤️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Lato', sans-serif;
+            background-color: #0a0f1e;
+            color: #e0e0e0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+            z-index: -2;
+        }
+
+        /* Stelle animate */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Contenitore principale */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            position: relative;
+            z-index: 1;
+            display: none;
+            opacity: 0;
+            transition: opacity 2s ease;
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: #f0e6d2;
+            text-align: center;
+            margin-bottom: 2rem;
+            letter-spacing: 1px;
+            font-size: 1.5rem;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: #c0c0c0;
+            text-align: center;
+            font-weight: 300;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 2rem 1.2rem 100px; }
+            h2 { font-size: 1.3rem; }
+            p { font-size: 0.95rem; }
+        }
+
+        /* Animazione reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Overlay iniziale */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0f1e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 999;
+            padding: 2rem;
+        }
+
+        .btn-heart {
+            background: none;
+            border: 2px solid #f0e6d2;
+            color: #f0e6d2;
+            padding: 1.2rem 2.5rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 50px;
+            animation: pulse 2s infinite;
+            min-width: 220px;
+            min-height: 65px;
+            -webkit-appearance: none;
+            transition: all 0.3s;
+        }
+
+        .btn-heart:active {
+            background: #f0e6d2;
+            color: #0a0f1e;
+            transform: scale(0.95);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(240, 230, 210, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(240, 230, 210, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(240, 230, 210, 0); }
+        }
+
+        /* Cuore finale */
+        .heart-container {
+            text-align: center;
+            margin: 4rem 0 2rem;
+        }
+
+        .heart {
+            width: 50px;
+            height: 50px;
+            fill: #e91e63;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background"></div>
+    
+    <!-- Stelle -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Audio nascosto -->
+    <audio id="backgroundMusic" preload="auto" loop>
+        <source src="nuvole_bianche.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Schermata iniziale -->
+    <div class="overlay" id="entryScreen">
+        <h2 style="font-size: 2rem; margin-bottom: 3rem;">Per Giorgia</h2>
+        <button class="btn-heart" id="startBtn">Apri il cuore di Simone ❤️</button>
+        <div class="loading" id="loading" style="display: none;">
+            Caricamento musica... 🎵
+        </div>
+    </div>
+
+    <!-- Lettera -->
+    <div class="container" id="letterContent">
+        <div class="reveal">
+            <p>Ciao amore mio,</p>
+        </div>
+
+        <div class="reveal">
+            <p>eccomi qui: è l'anima di Simone che ti scrive, e il pensiero del suo cuore che detta.</p>
+        </div>
+
+        <div class="reveal">
+            <p>Prima di continuare, ti chiedo di andare su YouTube e cercare Nuvole Bianche di Ludovico Einaudi.</p>
+        </div>
+
+        <div class="reveal">
+            <p>Ok, adesso ci siamo: questa è l'atmosfera giusta.</p>
+        </div>
+
+        <div class="reveal">
+            <p>Userò la melodia di queste dolci note per dirti che un altro San Valentino sta passando, come i nostri anni insieme. E se hai questa lettera tra le mani è perché, puntualmente, siamo senza un euro.</p>
+        </div>
+
+        <div class="reveal">
+            <p>Ma in realtà questo è un pregio che pochi riescono a vedere: quello di mettersi a nudo e lasciare che sia il cuore a parlare, descrivendo ciò che prova.</p>
+        </div>
+
+        <div class="reveal">
+            <p>Colgo questa occasione per fermare il tempo, trovare pace e dirti il motivo dell'amore crescente che provo per te: per la tua persona.</p>
+        </div>
+
+        <div class="reveal">
+            <p>La stessa persona che vedo combattere ogni giorno per i suoi ideali, per i suoi sogni e per il suo amore.</p>
+        </div>
+
+        <div class="reveal">
+            <p>La persona che, quando litiga con me, prima mette il muso ma allo stesso tempo vorrebbe soltanto darmi un abbraccio.</p>
+        </div>
+
+        <div class="reveal">
+            <p>La persona più sensibile che io conosca, capace di mostrarsi per ciò che è davvero in un mondo pieno di critiche e pregiudizi.</p>
+        </div>
+
+        <div class="reveal">
+            <p>La persona che la vita ha costretto a diventare donna troppo presto, affrontando le avversità della quotidianità e uscendone a testa alta, grazie proprio alla sua forza.</p>
+        </div>
+
+        <div class="reveal">
+            <p>Quella persona che io amerò per sempre.</p>
+        </div>
+
+        <div class="reveal">
+            <p>Grazie, Giorgia, per far parte della vita di Simone.</p>
+        </div>
+
+        <div class="heart-container reveal">
+            <svg class="heart" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        // Genera stelle
+        (function() {
+            const container = document.getElementById('stars');
+            const count = window.innerWidth < 768 ? 30 : 50;
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(star);
+            }
+        })();
+
+        const audio = document.getElementById('backgroundMusic');
+        const startBtn = document.getElementById('startBtn');
+        const loading = document.getElementById('loading');
+        const entryScreen = document.getElementById('entryScreen');
+        const letterContent = document.getElementById('letterContent');
+
+        // Precarica l'audio
+        audio.load();
+
+        startBtn.addEventListener('click', function() {
+            loading.style.display = 'block';
+            startBtn.disabled = true;
+            startBtn.style.opacity = '0.5';
+
+            // Aspetta che l'audio sia pronto
+            const tryPlay = () => {
+                audio.currentTime = 52; // Parte da 52 secondi
+                
+                audio.play()
+                    .then(() => {
+                        // Audio partito con successo
+                        showLetter();
+                    })
+                    .catch((error) => {
+                        console.log('Tentativo play:', error);
+                        // Riprova dopo un attimo
+                        setTimeout(tryPlay, 100);
+                    });
+            };
+
+            // Se l'audio è già caricato, play subito
+            if (audio.readyState >= 3) {
+                tryPlay();
+            } else {
+                // Altrimenti aspetta che si carichi
+                audio.addEventListener('canplaythrough', tryPlay, { once: true });
+            }
+        });
+
+        function showLetter() {
+            entryScreen.style.opacity = '0';
+            setTimeout(() => {
+                entryScreen.style.display = 'none';
+                letterContent.style.display = 'block';
+                setTimeout(() => {
+                    letterContent.style.opacity = '1';
+                    setupScrollReveal();
+                }, 50);
+            }, 1000);
+        }
+
+        function setupScrollReveal() {
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                document.querySelectorAll('.reveal').forEach(el => {
+                    observer.observe(el);
+                });
+            } else {
+                // Fallback per browser vecchi
+                document.querySelectorAll('.reveal').forEach(el => {
+                    el.classList.add('active');
+                });
+            }
+        }
+
+        // Gestione errori audio
+        audio.addEventListener('error', function(e) {
+            console.error('Errore audio:', e);
+            loading.innerHTML = '⚠️ Errore caricamento musica<br>Continua comunque...';
+            setTimeout(() => {
+                showLetter();
+            }, 2000);
+        });
+    </script>
+</body>
+
+</html>
